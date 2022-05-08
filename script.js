@@ -8,6 +8,7 @@ BODY.append(title);
 const textArea = document.createElement('textarea');
 BODY.append(textArea);
 
+
 class Keys {
     constructor(name, value, code) {
         this.name = null;
@@ -31,7 +32,8 @@ class Backspace extends Keys {
 }
 
 
-
+let lang = 'en';
+let caps = 'off';
 const KEY_NUMBERS = [96, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 45, 61];
 const KEY_LETTERS = [113, 119, 101, 114, 116, 121, 117, 105, 111, 112, 91, 93, 97, 115, 100, 102, 103, 104, 106, 107, 108, 59, 39, 122, 120, 99, 118, 98, 110, 109, 44, 46, 47];
 let arr = [];
@@ -61,11 +63,7 @@ const ALL_KEYS_RUS_BIG = ['Ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
                 'capsLock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', "Э", 'enter',
                 'shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', '.', '\&#8593;', 'shift',
                 'ctrl', 'win', 'alt', '', 'alt', 'ctrl', '\&#8592;', '\&#8595;', '\&#8594;'
-]
-document.onkeydown = (event) => {
-    arr.push(event.code);
-//console.log(arr);
-} 
+];
 
 
 const CONTAINER = document.createElement('div');
@@ -93,16 +91,16 @@ CONTAINER.addEventListener('click', (event) => {
                 const CAPS = document.querySelector('#key29');
                 if (CAPS.classList.contains('caps_on')) {
                     for (let i = 0; i < ALL_KEYS.length; i++) {
-                        //new Keys().createKey(ALL_KEYS, i);   
                         document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS[i];
                     }
                     CAPS.classList.remove('caps_on');
+                    caps = 'off';
                 } else {
                     for (let i = 0; i < ALL_KEYS_BIG.length; i++) {
-                        //new Keys().createKey(ALL_KEYS_BIG, i);    
                         document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_BIG[i];
                     }
                     CAPS.classList.add('caps_on');
+                    caps = 'on';
                 }
                 
                 break;
@@ -129,3 +127,56 @@ const CHANGE_LANG = document.createElement('div');
 CHANGE_LANG.innerHTML = "Для смены языка нажмите левые Alt + Shift";
 CHANGE_LANG.classList.add('lang');
 BODY.append(CHANGE_LANG);
+
+//одновременное нажатие клавиш
+
+function onKeys(func, ...codes) {
+    let pressKeys = new Set();
+
+    document.addEventListener('keydown', function(event) {
+        pressKeys.add(event.code);
+
+        for (let code of codes) {
+            if (!pressKeys.has(code)) {
+                return;
+            }
+        }
+        pressKeys.clear();
+        func();
+    });
+
+    document.addEventListener('keyup', function (event) {
+        pressKeys.delete(event.code);
+    })
+}
+
+//смена языка
+onKeys(
+    () => {
+        if (lang === 'en') {
+            if (caps === 'off') {
+                for (let i = 0; i < ALL_KEYS.length; i++) {
+                    document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_RUS[i];
+                }
+            } else {
+                for (let i = 0; i < ALL_KEYS.length; i++) {
+                    document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_RUS_BIG[i];
+                }
+            }
+            lang = 'ru';
+        } else {
+            if(caps === 'off') {
+                for (let i = 0; i < ALL_KEYS.length; i++) {
+                    document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS[i];
+                }
+            } else {
+                for (let i = 0; i < ALL_KEYS.length; i++) {
+                    document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_BIG[i];
+                }
+            }
+            lang = 'en';
+        }
+    },
+    'ShiftLeft',
+    'AltLeft'
+)
