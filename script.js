@@ -34,7 +34,8 @@ class Backspace extends Keys {
 
 let lang = 'en';
 let caps = 'off';
-const KEY_NUMBERS = [96, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 45, 61];
+const KEY_NUMBERS = ['~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'];
+const KEY_NUMBERS_RUS = ['Ё', '!', '"', '№', ';', '%', ':', '?', '*', '(', ')', '_', '+'];
 const KEY_LETTERS = [113, 119, 101, 114, 116, 121, 117, 105, 111, 112, 91, 93, 97, 115, 100, 102, 103, 104, 106, 107, 108, 59, 39, 122, 120, 99, 118, 98, 110, 109, 44, 46, 47];
 let arr = [];
 const ALL_KEYS_CODE = [192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8, 9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220, 46, 20, 65, 83, 68, 70, 71, 72, 74, 75, 76, 186, 222, 13, 16, 90, 88, 67, 86, 66, 78, 77, 188, 190, 191, 38, 16, 17, 91, 18, 32, 18, 17, 37, 40, 39];
@@ -70,9 +71,10 @@ const CONTAINER = document.createElement('div');
 CONTAINER.classList.add('container');
 BODY.append(CONTAINER);
 
-for (let i = 0; i < ALL_KEYS.length; i++) {
-    new Keys().createKey(ALL_KEYS, i);    
-}
+
+ALL_KEYS.forEach((elem, index, arr) => {
+    new Keys().createKey(arr, index);
+})
 
 CONTAINER.addEventListener('click', (event) => {
     if(event.target.classList.contains('key')){
@@ -87,7 +89,6 @@ CONTAINER.addEventListener('click', (event) => {
                 break;
             //capsLock
             case 29:                
-                //CONTAINER.innerHTML = null;
                 const CAPS = document.querySelector('#key29');
                 if (CAPS.classList.contains('caps_on')) {
                     for (let i = 0; i < ALL_KEYS.length; i++) {
@@ -104,6 +105,37 @@ CONTAINER.addEventListener('click', (event) => {
                 }
                 
                 break;
+                //tab
+            case 14:
+                textArea.innerHTML += "";
+                break;
+            case 42:
+                textArea.innerHTML += "";
+                break;  
+            case 55:
+                textArea.innerHTML += "";
+                break; 
+            case 56:
+                textArea.innerHTML += "";
+                break; 
+            case 57:
+                textArea.innerHTML += "";
+                break;
+            case 59:
+                textArea.innerHTML += "";
+                break;
+            case 60:
+                textArea.innerHTML += "";
+                break;  
+            case 28:
+                textArea.innerHTML += "";
+                break;  
+            case 41:
+                textArea.innerHTML += "";
+                break;   
+            case 54:
+                textArea.innerHTML += "";
+                break;  
             default:
                 textArea.innerHTML = text + document.querySelector(`#key${number}`).innerHTML;
 
@@ -180,3 +212,81 @@ onKeys(
     'ShiftLeft',
     'AltLeft'
 )
+//caps с клавиатуры
+
+document.addEventListener('keydown', function(event) {
+    if(event.code === 'CapsLock') {
+        if (caps === 'off') {
+            if (lang === 'en') {
+                for (let i = 0; i < ALL_KEYS.length; i++) {
+                    document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_BIG[i];
+                }
+            } else {
+                for (let i = 0; i < ALL_KEYS.length; i++) {
+                    document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_RUS_BIG[i];
+                }
+            }
+            caps = 'on';
+        } else {
+            if(lang === 'en') {
+                for (let i = 0; i < ALL_KEYS.length; i++) {
+                    document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS[i];
+                }
+            } else {
+                for (let i = 0; i < ALL_KEYS.length; i++) {
+                    document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_RUS[i];
+                }
+            }
+            caps = 'off';
+        }
+    }
+})
+
+//анимация клавиш при нажатии с клавиатуры
+
+document.addEventListener('keydown', (event) => {
+    document.querySelector(`#key${ALL_KEYS_STRING.indexOf(event.code)}`).classList.add('key-active');
+})
+
+document.addEventListener('keyup', (event) => {
+    const keyLink = document.querySelector(`#key${ALL_KEYS_STRING.indexOf(event.code)}`);
+    if(event.keyCode !== 116) {
+        document.querySelector(`#key${ALL_KEYS_STRING.indexOf(event.code)}`).classList.remove('key-active');
+    }
+    
+})
+
+//нажатие на шифт
+
+
+
+//клавиша шифт виртуальная
+document.addEventListener('mousedown', (event) => {
+    if(event.target.getAttribute('id') === 'key42' || event.target.getAttribute('id') === 'key54') {
+        if(lang === 'en') {
+            for (let i = 0; i <= 12; i++){
+                document.querySelector(`#key${i}`).innerHTML = KEY_NUMBERS[i];
+            }
+        } else {
+            for (let i = 0; i <= 12; i++){
+                document.querySelector(`#key${i}`).innerHTML = KEY_NUMBERS_RUS[i];
+            }
+        }
+    }
+})
+
+document.addEventListener('mouseup', (event) => {
+        if(event.target.getAttribute('id', 'key42') || event.target.getAttribute('id', 'key54')) {
+            if(lang === 'en') {
+                for (let i = 0; i <= 12; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS[i];
+                }
+            } else {
+                for (let i = 0; i <= 12; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS[i];
+                }
+            }
+        }
+})
+
+document.addEventListener('keydown', (event) => { console.log(event)})
