@@ -46,11 +46,12 @@ textarea {
     box-shadow: 0 4px 7px rgb(153, 80, 80);
 }
 
-.key:active{
+.key:active, .key-active{
     box-shadow: 0 0 4px  black;
     color: rgb(153, 80, 80);
     opacity: 1;
 }
+
 
 /*backspace*/
 #key13 {
