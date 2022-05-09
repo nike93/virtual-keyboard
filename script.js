@@ -289,4 +289,4 @@ document.addEventListener('mouseup', (event) => {
         }
 })
 
-document.addEventListener('keydown', (event) => { console.log(event)})
+
