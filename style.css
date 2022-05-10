@@ -15,7 +15,9 @@ textarea {
     min-height: 150px;
     margin: 30px auto;
     resize: vertical;
+    border: 2px black solid;
 }
+
 .container {
     width: 854px;
     display: flex;

@@ -9,6 +9,9 @@ const textArea = document.createElement('textarea');
 BODY.append(textArea);
 
 
+
+
+
 class Keys {
     constructor(name, value, code) {
         this.name = null;
@@ -27,9 +30,14 @@ class Keys {
 
 class Backspace extends Keys {
     deleteSymbol(text) {
-        return text.replace(/.$/, '');
+       let position = textArea.selectionStart;
+       return text.slice(0, position - 1) + text.slice(position);       
     }
 }
+
+document.onclick = function(event) {
+    textArea.focus();
+   };
 
 
 let lang = 'en';
@@ -104,16 +112,22 @@ if (lang === 'en') {
 
 
 CONTAINER.addEventListener('click', (event) => {
+    textArea.focus();
     if(event.target.classList.contains('key')){
-        let text = textArea.innerHTML;
+        let text = textArea.value;
         
         let number = Number(event.target.getAttribute('id').replace(/[a-zа-яё]/gi, ''));
-        
+        let pos = textArea.selectionStart; 
         switch(number){
             //backspace
             case 13:
-                textArea.innerHTML = new Backspace().deleteSymbol(text);
-                break;
+                if (pos === 0) {
+                    break;
+                } else {
+                    textArea.value = new Backspace().deleteSymbol(text);                                               
+                    textArea.setSelectionRange(pos - 1, pos - 1);
+                    break;
+                }
             //capsLock
             case 29:                
                 const CAPS = document.querySelector('#key29');
@@ -148,48 +162,58 @@ CONTAINER.addEventListener('click', (event) => {
                 break;
                 //tab
             case 14:
-                textArea.innerHTML += "";
+                textArea.value += "";
                 break;
             case 42:
-                textArea.innerHTML += "";
+                textArea.value += "";
                 break;  
             case 55:
-                textArea.innerHTML += "";
+                textArea.value += "";
                 break; 
             case 56:
-                textArea.innerHTML += "";
+                textArea.value += "";
                 break; 
             case 57:
-                textArea.innerHTML += "";
+                textArea.value += "";
+                break;
+            case 58:
+                textArea.value += " ";
                 break;
             case 59:
-                textArea.innerHTML += "";
+                textArea.value += "";
                 break;
             case 60:
-                textArea.innerHTML += "";
+                textArea.value += "";
                 break;  
             case 28:
-                textArea.innerHTML += "";
-                break;  
+                textArea.value = textArea.value.slice(0, pos) + textArea.value.slice(pos + 1); 
+                textArea.setSelectionRange(pos, pos);
+                break;              
             case 41:
-                textArea.innerHTML += "";
+                textArea.value = textArea.value.slice(0, pos) + "\n" + textArea.value.slice(pos);
+                textArea.setSelectionRange(pos + 1, pos + 1);
                 break;   
             case 54:
-                textArea.innerHTML += "";
+                textArea.value += "";
                 break;  
             default:
-                textArea.innerHTML = text + document.querySelector(`#key${number}`).innerHTML;
+                textArea.value = text + document.querySelector(`#key${number}`).innerHTML;
 
         }
         
     }
 })
 
+CONTAINER.addEventListener('mouseup', () => {
+    textArea.focus();
+})
 
 document.addEventListener('keydown', (event) => {
+    textArea.focus();
     document.querySelector(`#key${ALL_KEYS_STRING.indexOf(event.code)}`).classList.add('key_press');
 })
 document.addEventListener('keyup', (event) => {
+    textArea.focus();
     const keyLink = document.querySelector(`#key${ALL_KEYS_STRING.indexOf(event.code)}`);
     if(event.keyCode !== 116 && keyLink.classList.contains('key_press')){
         keyLink.classList.remove('key_press');
@@ -258,6 +282,7 @@ onKeys(
 //caps с клавиатуры
 
 document.addEventListener('keydown', function(event) {
+    textArea.focus();
     if(event.code === 'CapsLock') {
         if (caps === 'off') {
             if (lang === 'en') {
@@ -303,34 +328,140 @@ document.addEventListener('keyup', (event) => {
     
 })
 
-//нажатие на шифт
+
 
 
 
 //клавиша шифт виртуальная
 document.addEventListener('mousedown', (event) => {
+    textArea.focus();
     if(event.target.getAttribute('id') === 'key42' || event.target.getAttribute('id') === 'key54') {
         if(lang === 'en') {
             for (let i = 0; i <= 12; i++){
                 document.querySelector(`#key${i}`).innerHTML = KEY_NUMBERS[i];
             }
+            if(caps === 'off') {
+                for (let i = 13; i <= 63; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_BIG[i];
+                }
+            } else {
+                for (let i = 13; i <= 63; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS[i];
+                }
+            }
         } else {
             for (let i = 0; i <= 12; i++){
                 document.querySelector(`#key${i}`).innerHTML = KEY_NUMBERS_RUS[i];
+            }
+            if(caps === 'off') {
+                for (let i = 13; i <= 63; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS_BIG[i];
+                }
+            } else {
+                for (let i = 13; i <= 63; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS[i];
+                }
             }
         }
     }
 })
 
 document.addEventListener('mouseup', (event) => {
+    textArea.focus();
         if(event.target.getAttribute('id', 'key42') || event.target.getAttribute('id', 'key54')) {
             if(lang === 'en') {
                 for (let i = 0; i <= 12; i++){
                     document.querySelector(`#key${i}`).innerHTML = ALL_KEYS[i];
                 }
+                if(caps === 'off') {
+                    for (let i = 13; i <= 63; i++){
+                        document.querySelector(`#key${i}`).innerHTML = ALL_KEYS[i];
+                    }
+                } else {
+                    for (let i = 13; i <= 63; i++){
+                        document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_BIG[i];
+                    }
+                }
             } else {
                 for (let i = 0; i <= 12; i++){
                     document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS[i];
+                }
+                if(caps === 'off') {
+                    for (let i = 13; i <= 63; i++){
+                        document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS[i];
+                    }
+                } else {
+                    for (let i = 13; i <= 63; i++){
+                        document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS_BIG[i];
+                    }
+                }
+            }
+        }
+})
+
+
+
+document.addEventListener('keydown', (event) => {
+    textArea.focus();
+    if(event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+        if(lang === 'en') {
+            for (let i = 0; i <= 12; i++){
+                document.querySelector(`#key${i}`).innerHTML = KEY_NUMBERS[i];
+            }
+            if(caps === 'off') {
+                for (let i = 13; i <= 63; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_BIG[i];
+                }
+            } else {
+                for (let i = 13; i <= 63; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS[i];
+                }
+            }
+        } else {
+            for (let i = 0; i <= 12; i++){
+                document.querySelector(`#key${i}`).innerHTML = KEY_NUMBERS_RUS[i];
+            }
+            if(caps === 'off') {
+                for (let i = 13; i <= 63; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS_BIG[i];
+                }
+            } else {
+                for (let i = 13; i <= 63; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS[i];
+                }
+            }
+        }
+    }
+})
+
+document.addEventListener('keyup', (event) => {
+    textArea.focus();
+        if(event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+            if(lang === 'en') {
+                for (let i = 0; i <= 12; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS[i];
+                }
+                if(caps === 'off') {
+                    for (let i = 13; i <= 63; i++){
+                        document.querySelector(`#key${i}`).innerHTML = ALL_KEYS[i];
+                    }
+                } else {
+                    for (let i = 13; i <= 63; i++){
+                        document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_BIG[i];
+                    }
+                }
+            } else {
+                for (let i = 0; i <= 12; i++){
+                    document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS[i];
+                }
+                if(caps === 'off') {
+                    for (let i = 13; i <= 63; i++){
+                        document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS[i];
+                    }
+                } else {
+                    for (let i = 13; i <= 63; i++){
+                        document.querySelector(`#key${i}`).innerHTML = ALL_KEYS_RUS_BIG[i];
+                    }
                 }
             }
         }
