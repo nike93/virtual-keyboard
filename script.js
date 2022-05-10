@@ -162,7 +162,8 @@ CONTAINER.addEventListener('click', (event) => {
                 break;
                 //tab
             case 14:
-                textArea.value += "";
+                textArea.value = textArea.value.slice(0, pos) + "    " + textArea.value.slice(pos);
+                textArea.setSelectionRange(pos + 4, pos + 4);
                 break;
             case 42:
                 textArea.value += "";
