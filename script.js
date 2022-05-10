@@ -71,10 +71,37 @@ const CONTAINER = document.createElement('div');
 CONTAINER.classList.add('container');
 BODY.append(CONTAINER);
 
+if(localStorage) {
+    lang = localStorage.getItem('lang');
+    caps = localStorage.getItem('caps');
+}
 
-ALL_KEYS.forEach((elem, index, arr) => {
-    new Keys().createKey(arr, index);
-})
+//создание кнопок
+if (lang === 'en') {
+    if(caps === 'off') {
+        ALL_KEYS.forEach((elem, index, arr) => {
+            new Keys().createKey(arr, index);
+        })
+    } else {
+        ALL_KEYS_BIG.forEach((elem, index, arr) => {
+            new Keys().createKey(arr, index);            
+        })
+        document.querySelector('#key29').classList.add('caps_on');
+    } 
+}else {
+        if(caps === 'off') {
+            ALL_KEYS_RUS.forEach((elem, index, arr) => {
+                new Keys().createKey(arr, index);
+            })
+        } else {
+            ALL_KEYS_RUS_BIG.forEach((elem, index, arr) => {
+                new Keys().createKey(arr, index);
+            })
+            document.querySelector('#key29').classList.add('caps_on');
+        } 
+    }
+
+
 
 CONTAINER.addEventListener('click', (event) => {
     if(event.target.classList.contains('key')){
@@ -90,18 +117,32 @@ CONTAINER.addEventListener('click', (event) => {
             //capsLock
             case 29:                
                 const CAPS = document.querySelector('#key29');
-                if (CAPS.classList.contains('caps_on')) {
-                    for (let i = 0; i < ALL_KEYS.length; i++) {
-                        document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS[i];
+                if (caps === 'on') {
+                    if(lang === 'en') {
+                        for (let i = 0; i < ALL_KEYS.length; i++) {
+                            document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS[i];
+                        }
+                    } else {
+                        for (let i = 0; i < ALL_KEYS.length; i++) {
+                            document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_RUS[i];
+                        }
                     }
                     CAPS.classList.remove('caps_on');
                     caps = 'off';
+                    localStorage.setItem('caps', 'off');
                 } else {
-                    for (let i = 0; i < ALL_KEYS_BIG.length; i++) {
-                        document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_BIG[i];
+                    if(lang === 'en') {
+                        for (let i = 0; i < ALL_KEYS_BIG.length; i++) {
+                            document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_BIG[i];
+                        }
+                    } else {
+                        for (let i = 0; i < ALL_KEYS_BIG.length; i++) {
+                            document.querySelector(`#key${i}`).innerHTML =  ALL_KEYS_RUS_BIG[i];
+                        }
                     }
                     CAPS.classList.add('caps_on');
                     caps = 'on';
+                    localStorage.setItem('caps', 'on');
                 }
                 
                 break;
@@ -196,6 +237,7 @@ onKeys(
                 }
             }
             lang = 'ru';
+            localStorage.setItem('lang', 'ru');
         } else {
             if(caps === 'off') {
                 for (let i = 0; i < ALL_KEYS.length; i++) {
@@ -207,6 +249,7 @@ onKeys(
                 }
             }
             lang = 'en';
+            localStorage.setItem('lang', 'en');
         }
     },
     'ShiftLeft',
@@ -227,6 +270,8 @@ document.addEventListener('keydown', function(event) {
                 }
             }
             caps = 'on';
+            localStorage.setItem('caps', 'on');
+            document.querySelector('#key29').classList.add('caps_on');
         } else {
             if(lang === 'en') {
                 for (let i = 0; i < ALL_KEYS.length; i++) {
@@ -238,6 +283,8 @@ document.addEventListener('keydown', function(event) {
                 }
             }
             caps = 'off';
+            localStorage.setItem('caps', 'off');
+            document.querySelector('#key29').classList.remove('caps_on');
         }
     }
 })
